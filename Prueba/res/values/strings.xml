@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="app_name">Prueba</string>
+    <string name="action_settings">Cosas</string>
+    <string name="nombre">Escribe tu nombre:</string>
+    <string name="boton">Calibrar</string>
+
+</resources>
