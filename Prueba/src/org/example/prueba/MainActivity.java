@@ -91,12 +91,20 @@ public class MainActivity extends Activity {
 
 
 		//Obtenemos una referencia a los controles de la interfaz
-		final Button btnHola = (Button)findViewById(R.id.BtnCalib);
+		final Button btnCalib = (Button)findViewById(R.id.BtnCalib);
+		
+		final Button btnReset = (Button)findViewById(R.id.BtnReset);
+		btnReset.setOnClickListener(new OnClickListener(){
+			public void onClick(View v) {
+				prefs.edit().clear().commit();
+			}
+		});
 
-		btnHola.setOnClickListener(new OnClickListener() {
+		btnCalib.setOnClickListener(new OnClickListener() {
 			@Override
 			public void onClick(View v) {
 				Mat matriz=Mat.eye(3, 3, CvType.CV_64F);
+				Mat coeffs=Mat.zeros(8,1,CvType.CV_64F);
 				if(!isCalibrated()){
 					File prueba=Environment.getExternalStorageDirectory();
 					String path=prueba.getAbsolutePath()+"/Pictures";
@@ -107,7 +115,7 @@ public class MainActivity extends Activity {
 						pathList[i]=path+"/"+lista1[i];
 					}
 					Log.e("Pruebas",pathList[0]);
-					calibrate(pathList,matriz.getNativeObjAddr());
+					calibrate(pathList,matriz.getNativeObjAddr(),coeffs.getNativeObjAddr());
 					SharedPreferences.Editor editor= prefs.edit();
 					Log.e("Pruebas",matriz.dump());
 					double[] elemen1=matriz.get(0, 0);
@@ -125,7 +133,7 @@ public class MainActivity extends Activity {
 					editor.commit();
 				}
 				else{
-					btnHola.setText("Calibrado!");
+					btnCalib.setText("Calibrado!");
 					float aux[]= new float[4];
 					aux[0]=prefs.getFloat("elem1", 1);
 					aux[1]=prefs.getFloat("elem2", 1);
@@ -164,5 +172,5 @@ public class MainActivity extends Activity {
 
 	private native String apellido(String nombre);
 	private native double getAt(long l,int posicion);
-	private native void calibrate(Object[] path, long l);
+	private native void calibrate(Object[] path, long l, long m);
 }

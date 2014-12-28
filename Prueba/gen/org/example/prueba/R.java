@@ -1107,9 +1107,11 @@ containing a value of this type.
     }
     public static final class id {
         public static final int BtnCalib=0x7f050041;
-        public static final int LblNombre=0x7f050040;
+        public static final int BtnReset=0x7f050043;
         public static final int LinearLayout1=0x7f05003f;
-        public static final int TxtSaludo=0x7f050042;
+        public static final int TxtHint1=0x7f050040;
+        public static final int TxtHint2=0x7f050042;
+        public static final int TxtSaludo=0x7f050044;
         public static final int action_bar=0x7f05001f;
         public static final int action_bar_activity_content=0x7f050018;
         public static final int action_bar_container=0x7f05001e;
@@ -1121,13 +1123,13 @@ containing a value of this type.
         public static final int action_menu_divider=0x7f050019;
         public static final int action_menu_presenter=0x7f05001a;
         public static final int action_mode_close_button=0x7f050027;
-        public static final int action_settings=0x7f050044;
+        public static final int action_settings=0x7f050046;
         public static final int activity_chooser_view_content=0x7f050028;
         public static final int always=0x7f05000e;
         public static final int any=0x7f050000;
         public static final int back=0x7f050001;
         public static final int beginning=0x7f050014;
-        public static final int camara=0x7f050043;
+        public static final int camara=0x7f050045;
         public static final int checkbox=0x7f050030;
         public static final int collapseActionView=0x7f050010;
         public static final int default_activity_button=0x7f05002b;
@@ -1277,8 +1279,10 @@ containing a value of this type.
         public static final int abc_shareactionprovider_share_with_application=0x7f0a000b;
         public static final int action_settings=0x7f0a000e;
         public static final int app_name=0x7f0a000d;
-        public static final int boton=0x7f0a0010;
-        public static final int nombre=0x7f0a000f;
+        public static final int boton=0x7f0a0011;
+        public static final int hint1=0x7f0a000f;
+        public static final int hint2=0x7f0a0010;
+        public static final int reset=0x7f0a0012;
     }
     public static final class style {
         /** 
