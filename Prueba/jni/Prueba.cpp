@@ -14,8 +14,8 @@
 
 #include <android/log.h>
 
-
-
+#define  LOG_TAG    "Native"
+#define  ALOG(...)  __android_log_print(ANDROID_LOG_INFO,LOG_TAG,__VA_ARGS__)
 
 using namespace std;
 using namespace cv;
@@ -55,13 +55,13 @@ float* getMoment(vector<Point> contorno){
 	return centro;
 }
 
-void printPoint(Point punto){
+/*void printPoint(Point punto){
 	cout << "Punto: " << punto.x << "," << punto.y << endl;
-}
+}*/
 
-void printPoint(Point3f punto){
+/*void printPoint(Point3f punto){
 	cout << "Punto: " << punto.x << "," << punto.y << "," << punto.z << endl;
-}
+}*/
 
 
 //Hallar los 2 menores Y y luego encontrar el menor X entre esos 2 para que sea la primera esquina
@@ -124,23 +124,13 @@ vector<vector<Point> > eliminateDoubleContours(vector<vector<Point> > cuadrados)
 	for(int i=0; i<cuadrados.size();i++){
 		for(int j=0; j<cuadrados.size() && encontrado==0;j++){
 			if(i!=j){
-				float* centro1=getMoment(cuadrados[i]);
-				cout << "centro1: " << centro1[0] << " " << centro1[1] << endl;
-				float* centro2=getMoment(cuadrados[j]);
-				cout << "centro2: " << centro2[0] << " " << centro2[1] << endl;
-				float punto1[2];
-				float punto2[2];
-				punto1[0]=cuadrados[i][0].x;
-				punto1[1]=cuadrados[i][0].y;
-				punto2[0]=cuadrados[j][0].x;
-				punto2[1]=cuadrados[j][0].y;
-				float distancia1 = distance(punto1,centro1);
-				cout << "distancia1: " << distancia1 << endl;
-				float distancia2 = distance(punto2,centro1);
-				cout << "distancia2: " << distancia2 << endl;
-				float threshold=distancia1/10;
-				cout << "threshold: " << threshold << endl;
-				if(distancia2<(distancia1-threshold)){
+				double area1=contourArea(cuadrados[i]);
+				double area2=contourArea(cuadrados[j]);
+				double threshold=area1/10.0;
+				if(area2<area1-threshold){
+					__android_log_print(ANDROID_LOG_INFO,"Native","Area1: %f",area1);
+					__android_log_print(ANDROID_LOG_INFO,"Native","Area2: %f",area2);
+					__android_log_print(ANDROID_LOG_INFO,"Native","Threshold: %f",threshold);
 					ncuadrados.push_back(cuadrados[i]);
 					ncuadrados.push_back(cuadrados[j]);
 					encontrado=1;
@@ -196,7 +186,13 @@ vector<vector<Point> > filtraVertices(vector<vector<Point> > contornos){
 	return cuadrangulos;
 }
 
-
+void printContour(vector<Point> contorno){
+	__android_log_print(ANDROID_LOG_INFO,"Native","Comienzo");
+	for(int i=0;i<contorno.size();i++){
+		__android_log_print(ANDROID_LOG_INFO,"Native","(%d, %d)",contorno[i].x,contorno[i].y);
+	}
+	__android_log_print(ANDROID_LOG_INFO,"Native","Fin");
+}
 
 vector<Point3f> getObjectPoints(){
 	vector<Point3f> objectPoints;
@@ -211,7 +207,6 @@ vector<Point3f> getObjectPoints(){
 	puntos[7].x=150;puntos[7].y=150;puntos[7].z=0;
 	for(int i=0;i<8;i++){
 		objectPoints.push_back(puntos[i]);
-		cout << "Punto: " << objectPoints[i].x << "," << objectPoints[i].y << "," << objectPoints[i].z << endl;
 	}
 
 	return objectPoints;
@@ -220,40 +215,47 @@ vector<Point3f> getObjectPoints(){
 extern "C" {
 JNIEXPORT jstring JNICALL Java_org_example_prueba_MainActivity_apellido(JNIEnv *env, jobject thisObj, jstring nombre);
 
+//JNIEXPORT void JNICALL Java_org_example_prueba_FrmSaludo_findSquares(JNIEnv *env, jobject thisObj, jlong imagen,jlong cM, jlong dC);
 JNIEXPORT void JNICALL Java_org_example_prueba_FrmSaludo_findSquares(JNIEnv *env, jobject thisObj, jlong imagen);
 
 JNIEXPORT void JNICALL Java_org_example_prueba_MainActivity_calibrate(JNIEnv *env, jobject thisObj, jobjectArray archivos, jlong matPtr, jlong coeffPtr);
 
-JNIEXPORT void JNICALL Java_org_example_prueba_FrmSaludo_findSquares(JNIEnv *env, jobject thisObj, jlong imagen,jlong cM, jlong dC){
+//JNIEXPORT void JNICALL Java_org_example_prueba_FrmSaludo_findSquares(JNIEnv *env, jobject thisObj, jlong imagen,jlong cM, jlong dC){
+JNIEXPORT void JNICALL Java_org_example_prueba_FrmSaludo_findSquares(JNIEnv *env, jobject thisObj, jlong imagen){
 	Mat& src  = *(Mat*)imagen;
-	Mat& cameraMatrix  = *(Mat*)cM;
-	Mat& distCoeffs  = *(Mat*)dC;
+	//Mat& cameraMatrix  = *(Mat*)cM;
+	//Mat& distCoeffs  = *(Mat*)dC;
 	vector<vector<Point> > contours;
 	vector<vector<Point> > cuadrados;
 	vector<Vec4i> hierarchy;
-	Mat src_gray, canny_output, rvec, tvec;
+	Mat src_gray, canny_output, rvec, tvec, dst;
 
+	//resize(src, dst, Size(), 0.3, 0.3, CV_INTER_AREA);
 	cvtColor( src, src_gray, CV_BGR2GRAY );
 	blur( src_gray, src_gray, Size(3,3) );
-	int thresh=190;
+	int thresh=150;
 	Canny( src_gray, canny_output, thresh, thresh*2, 3 );
 	findContours( canny_output, contours, hierarchy, CV_RETR_TREE, CV_CHAIN_APPROX_SIMPLE, Point(0, 0) );
 	cuadrados=filtraVertices(contours);
 	vector<vector<Point> > marca=eliminateDoubleContours(cuadrados);
-	vector<Point3f> objectPoints=getObjectPoints();
-	marca[0]=sortCoord(marca[0]);
-	marca[1]=sortCoord(marca[1]);
-	vector<Point2f> imagePoints;
-	for(int i=0;i<marca[0].size();i++){
-		imagePoints.push_back(marca[0][i]);
+	if(!marca.empty()){
+		printContour(marca[0]);
+		printContour(marca[1]);
+		/*vector<Point3f> objectPoints=getObjectPoints();
+		marca[0]=sortCoord(marca[0]);
+		marca[1]=sortCoord(marca[1]);
+		vector<Point2f> imagePoints;
+		for(int i=0;i<marca[0].size();i++){
+			imagePoints.push_back(marca[0][i]);
+		}
+		for(int i=0;i<marca[1].size();i++){
+			imagePoints.push_back(marca[1][i]);
+		}
+		rvec=Mat::zeros(3, 1, CV_64F);
+		tvec=Mat::zeros(3, 1, CV_64F);
+		//solvePnP(objectPoints,imagePoints,cameraMatrix,distCoeffs,rvec,tvec);*/
+		drawContours(src, cuadrados, -1, Scalar(0,255,0),2,8);
 	}
-	for(int i=0;i<marca[1].size();i++){
-		imagePoints.push_back(marca[1][i]);
-	}
-	rvec=Mat::zeros(3, 1, CV_64F);
-	tvec=Mat::zeros(3, 1, CV_64F);
-	solvePnP(objectPoints,imagePoints,cameraMatrix,distCoeffs,rvec,tvec);
-	drawContours(src, cuadrados, -1, Scalar(0,255,0),2,8);
 }
 
 
@@ -282,7 +284,7 @@ JNIEXPORT void JNICALL Java_org_example_prueba_MainActivity_calibrate(JNIEnv *en
 		//string ruta(strdir+"\\"+imageList[i]);
 		Mat view=imread(imageList[i]);
 		Mat dst;
-		resize(view, dst, Size(), 0.3, 0.3, CV_INTER_AREA);
+		resize(view, dst, Size(), 0.3, 0.23, CV_INTER_AREA);
 		found=findChessboardCorners(dst,Size(8,5),pointBuf,0);
 		if(found){
 			imagePoints.push_back(pointBuf);

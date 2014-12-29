@@ -27,6 +27,7 @@
 									<listOptionValue builtIn="false" value="&quot;D:\adt-bundle-windows-x86_64-20140702\android-ndk-r10b\sources\cxx-stl\gnu-libstdc++\4.9\include&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;D:\adt-bundle-windows-x86_64-20140702\android-ndk-r10b\sources\cxx-stl\gnu-libstdc++\4.9\libs\armeabi-v7a\include&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;D:\OpenCV-2.4.9-android-sdk\sdk\native\libs\armeabi-v7a&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;D:\adt-bundle-windows-x86_64-20140702\android-ndk-r10b\toolchains\arm-linux-androideabi-4.9\prebuilt\windows-x86_64\lib\gcc\arm-linux-androideabi\4.9\include&quot;"/>
 								</option>
 								<inputType id="com.android.gcc.inputType.674072321" superClass="com.android.gcc.inputType"/>
 							</tool>
