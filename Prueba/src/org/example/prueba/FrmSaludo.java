@@ -51,10 +51,9 @@ public class FrmSaludo extends Activity implements CvCameraViewListener2 {
         super.onCreate(savedInstanceState);
         getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
         setContentView(R.layout.camera);
-        //cameraMatrix=loadMatrix();
-        //distCoeffs=loadCoeffs();
+        cameraMatrix=loadMatrix();
+        distCoeffs=loadCoeffs();
         mOpenCvCameraView = (CameraBridgeViewBase) findViewById(R.id.camara);
-        //mOpenCvCameraView.setMaxFrameSize(width, height);
 		mOpenCvCameraView.setCvCameraViewListener(this);
        }
 	
@@ -127,11 +126,11 @@ public class FrmSaludo extends Activity implements CvCameraViewListener2 {
 	public Mat onCameraFrame(CvCameraViewFrame inputFrame) {
 		mRgba = inputFrame.rgba();
 		Log.e("Pruebas",mRgba.size().toString());
-		//findSquares(mRgba.getNativeObjAddr(),cameraMatrix.getNativeObjAddr(),distCoeffs.getNativeObjAddr());
-		findSquares(mRgba.getNativeObjAddr());
+		findSquares(mRgba.getNativeObjAddr(),cameraMatrix.getNativeObjAddr(),distCoeffs.getNativeObjAddr());
+		//findSquares(mRgba.getNativeObjAddr());
 		return mRgba;
 	}
 
-	//private native void findSquares(long nativeObjAddr, long cM, long dC);
-	private native void findSquares(long nativeObjAddr);
+	private native void findSquares(long nativeObjAddr, long cM, long dC);
+	//private native void findSquares(long nativeObjAddr);
 }

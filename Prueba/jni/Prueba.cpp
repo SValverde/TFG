@@ -127,10 +127,11 @@ vector<vector<Point> > eliminateDoubleContours(vector<vector<Point> > cuadrados)
 				double area1=contourArea(cuadrados[i]);
 				double area2=contourArea(cuadrados[j]);
 				double threshold=area1/10.0;
-				if(area2<area1-threshold){
-					__android_log_print(ANDROID_LOG_INFO,"Native","Area1: %f",area1);
-					__android_log_print(ANDROID_LOG_INFO,"Native","Area2: %f",area2);
-					__android_log_print(ANDROID_LOG_INFO,"Native","Threshold: %f",threshold);
+				double inside=pointPolygonTest(cuadrados[i],cuadrados[j][0],false);
+				if(area2<area1-threshold && inside>0){
+					//__android_log_print(ANDROID_LOG_INFO,"Native","Area1: %f",area1);
+					//__android_log_print(ANDROID_LOG_INFO,"Native","Area2: %f",area2);
+					//__android_log_print(ANDROID_LOG_INFO,"Native","Threshold: %f",threshold);
 					ncuadrados.push_back(cuadrados[i]);
 					ncuadrados.push_back(cuadrados[j]);
 					encontrado=1;
@@ -215,18 +216,17 @@ vector<Point3f> getObjectPoints(){
 extern "C" {
 JNIEXPORT jstring JNICALL Java_org_example_prueba_MainActivity_apellido(JNIEnv *env, jobject thisObj, jstring nombre);
 
-//JNIEXPORT void JNICALL Java_org_example_prueba_FrmSaludo_findSquares(JNIEnv *env, jobject thisObj, jlong imagen,jlong cM, jlong dC);
-JNIEXPORT void JNICALL Java_org_example_prueba_FrmSaludo_findSquares(JNIEnv *env, jobject thisObj, jlong imagen);
+JNIEXPORT void JNICALL Java_org_example_prueba_FrmSaludo_findSquares(JNIEnv *env, jobject thisObj, jlong imagen,jlong cM, jlong dC);
+//JNIEXPORT void JNICALL Java_org_example_prueba_FrmSaludo_findSquares(JNIEnv *env, jobject thisObj, jlong imagen);
 
 JNIEXPORT void JNICALL Java_org_example_prueba_MainActivity_calibrate(JNIEnv *env, jobject thisObj, jobjectArray archivos, jlong matPtr, jlong coeffPtr);
 
-//JNIEXPORT void JNICALL Java_org_example_prueba_FrmSaludo_findSquares(JNIEnv *env, jobject thisObj, jlong imagen,jlong cM, jlong dC){
-JNIEXPORT void JNICALL Java_org_example_prueba_FrmSaludo_findSquares(JNIEnv *env, jobject thisObj, jlong imagen){
+JNIEXPORT void JNICALL Java_org_example_prueba_FrmSaludo_findSquares(JNIEnv *env, jobject thisObj, jlong imagen,jlong cM, jlong dC){
+//JNIEXPORT void JNICALL Java_org_example_prueba_FrmSaludo_findSquares(JNIEnv *env, jobject thisObj, jlong imagen){
 	Mat& src  = *(Mat*)imagen;
-	//Mat& cameraMatrix  = *(Mat*)cM;
-	//Mat& distCoeffs  = *(Mat*)dC;
-	vector<vector<Point> > contours;
-	vector<vector<Point> > cuadrados;
+	Mat& cameraMatrix  = *(Mat*)cM;
+	Mat& distCoeffs  = *(Mat*)dC;
+	vector<vector<Point> > contours, cuadrados, marca, ordenados;
 	vector<Vec4i> hierarchy;
 	Mat src_gray, canny_output, rvec, tvec, dst;
 
@@ -237,24 +237,28 @@ JNIEXPORT void JNICALL Java_org_example_prueba_FrmSaludo_findSquares(JNIEnv *env
 	Canny( src_gray, canny_output, thresh, thresh*2, 3 );
 	findContours( canny_output, contours, hierarchy, CV_RETR_TREE, CV_CHAIN_APPROX_SIMPLE, Point(0, 0) );
 	cuadrados=filtraVertices(contours);
-	vector<vector<Point> > marca=eliminateDoubleContours(cuadrados);
+	marca=eliminateDoubleContours(cuadrados);
 	if(!marca.empty()){
-		printContour(marca[0]);
-		printContour(marca[1]);
-		/*vector<Point3f> objectPoints=getObjectPoints();
-		marca[0]=sortCoord(marca[0]);
-		marca[1]=sortCoord(marca[1]);
+		//printContour(marca[0]);
+		//printContour(marca[1]);
+		vector<Point3f> objectPoints=getObjectPoints();
+		ordenados.push_back(sortCoord(marca[0]));
+		ordenados.push_back(sortCoord(marca[1]));
+		//printContour(ordenados[0]);
 		vector<Point2f> imagePoints;
-		for(int i=0;i<marca[0].size();i++){
-			imagePoints.push_back(marca[0][i]);
+		for(int i=0;i<ordenados[0].size();i++){
+			imagePoints.push_back(ordenados[0][i]);
 		}
-		for(int i=0;i<marca[1].size();i++){
-			imagePoints.push_back(marca[1][i]);
+		for(int i=0;i<ordenados[1].size();i++){
+			imagePoints.push_back(ordenados[1][i]);
 		}
 		rvec=Mat::zeros(3, 1, CV_64F);
 		tvec=Mat::zeros(3, 1, CV_64F);
-		//solvePnP(objectPoints,imagePoints,cameraMatrix,distCoeffs,rvec,tvec);*/
-		drawContours(src, cuadrados, -1, Scalar(0,255,0),2,8);
+		solvePnP(objectPoints,imagePoints,cameraMatrix,distCoeffs,rvec,tvec);
+		stringstream str1;
+		str1  << "Distance: " << tvec.row(2);
+		drawContours(src, marca, -1, Scalar(0,255,0),2,8);
+		putText(src,str1.str(),Point(5,60),FONT_HERSHEY_SIMPLEX,0.5,Scalar::all(255),1.5);
 	}
 }
 
