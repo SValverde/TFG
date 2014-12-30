@@ -90,7 +90,9 @@ public class MainActivity extends Activity {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_main);
 		prefs=getSharedPreferences("Calibracion",Context.MODE_PRIVATE);
-
+		
+		File wallpaperDirectory = new File(Environment.getExternalStorageDirectory()+"/Calibracion");
+		wallpaperDirectory.mkdirs();
 
 		//Obtenemos una referencia a los controles de la interfaz
 		final Button btnCalib = (Button)findViewById(R.id.BtnCalib);
@@ -111,7 +113,7 @@ public class MainActivity extends Activity {
 				btnCalib.setText("Calibrando");
 				if(!isCalibrated()){
 					File prueba=Environment.getExternalStorageDirectory();
-					String path=prueba.getAbsolutePath()+"/Pictures";
+					String path=prueba.getAbsolutePath()+"/Calibracion";
 					File pictures= new File(path);	
 					String lista1[]=pictures.list();
 					String pathList[]= new String[lista1.length];

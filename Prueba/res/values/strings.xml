@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-    <string name="app_name">Prueba</string>
+    <string name="app_name">TFG</string>
     <string name="action_settings">Cosas</string>
     <string name="hint1">Pulsa para calibrar</string>  
     <string name="hint2">Pulsa para borrar la configuracion</string>

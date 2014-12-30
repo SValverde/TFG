@@ -213,6 +213,17 @@ vector<Point3f> getObjectPoints(){
 	return objectPoints;
 }
 
+void putVector(Mat imagen,string mensaje,Mat vector,int flag){
+	stringstream str1,str2,str3;
+	str1  << vector.row(0);
+	str2  << vector.row(1);
+	str3  << vector.row(2);
+	putText(imagen,mensaje,Point(5,60+flag),FONT_HERSHEY_SIMPLEX,1,Scalar::all(255),1.5);
+	putText(imagen,str1.str(),Point(5,90+flag),FONT_HERSHEY_SIMPLEX,1,Scalar::all(255),1.5);
+	putText(imagen,str2.str(),Point(5,120+flag),FONT_HERSHEY_SIMPLEX,1,Scalar::all(255),1.5);
+	putText(imagen,str3.str(),Point(5,150+flag),FONT_HERSHEY_SIMPLEX,1,Scalar::all(255),1.5);
+}
+
 extern "C" {
 JNIEXPORT jstring JNICALL Java_org_example_prueba_MainActivity_apellido(JNIEnv *env, jobject thisObj, jstring nombre);
 
@@ -255,10 +266,9 @@ JNIEXPORT void JNICALL Java_org_example_prueba_FrmSaludo_findSquares(JNIEnv *env
 		rvec=Mat::zeros(3, 1, CV_64F);
 		tvec=Mat::zeros(3, 1, CV_64F);
 		solvePnP(objectPoints,imagePoints,cameraMatrix,distCoeffs,rvec,tvec);
-		stringstream str1;
-		str1  << "Distance: " << tvec.row(2);
 		drawContours(src, marca, -1, Scalar(0,255,0),2,8);
-		putText(src,str1.str(),Point(5,60),FONT_HERSHEY_SIMPLEX,0.5,Scalar::all(255),1.5);
+		putVector(src,"Rvec",rvec,0);
+		putVector(src,"Tvec",tvec,150);
 	}
 }
 
