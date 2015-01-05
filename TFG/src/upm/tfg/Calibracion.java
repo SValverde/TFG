@@ -114,14 +114,7 @@ public class Calibracion extends Activity {
 					//Guardamos los parametros de la matriz y los coeficientes
 					saveMatrix(matriz);
 					saveCoeffs(coeffs);
-				}
-				//Si esta calibrada no hacemos nada
-				else{
-					btnCalib.setText("Calibrado!");
-					matriz=loadMatrix();
-					coeffs=loadCoeffs();
-					Log.e("Prueba",matriz.dump());
-					Log.e("Prueba",coeffs.dump());
+					btnCalib.setText("Continuar");
 				}
 				//Creamos el Intent
 				Intent intent = new Intent(Calibracion.this, Localizacion.class);
@@ -175,42 +168,6 @@ public class Calibracion extends Activity {
 		editor.putFloat("elem3", e3);
 		editor.putFloat("elem4", e4);
 		editor.commit();
-	}
-
-
-	private Mat loadMatrix() {
-
-		Mat resultado=Mat.zeros(3,3,CvType.CV_64F);
-        SharedPreferences prefs=getSharedPreferences("Calibracion",Context.MODE_PRIVATE);
-        float aux[]= new float[4];
-		aux[0]=prefs.getFloat("elem1", 1);
-		aux[1]=prefs.getFloat("elem2", 1);
-		aux[2]=prefs.getFloat("elem3", 1);
-		aux[3]=prefs.getFloat("elem4", 1);
-		resultado.put(0, 0, aux[0]);
-		resultado.put(0, 2, aux[1]);
-		resultado.put(1, 1, aux[2]);
-		resultado.put(1, 2, aux[3]);
-		resultado.put(2, 2, 1.0);
-		return resultado;
-	}
-	
-	private Mat loadCoeffs() {
-
-		Mat resultado=Mat.zeros(8,1,CvType.CV_64F);
-        SharedPreferences prefs=getSharedPreferences("Calibracion",Context.MODE_PRIVATE);
-        float aux[]= new float[5];
-		aux[0]=prefs.getFloat("coef1", 1);
-		aux[1]=prefs.getFloat("coef2", 1);
-		aux[2]=prefs.getFloat("coef3", 1);
-		aux[3]=prefs.getFloat("coef4", 1);
-		aux[4]=prefs.getFloat("coef5", 1);
-		resultado.put(0, 0, aux[0]);
-		resultado.put(1, 0, aux[1]);
-		resultado.put(2, 0, aux[2]);
-		resultado.put(3, 0, aux[3]);
-		resultado.put(4, 0, aux[4]);
-		return resultado;
 	}
 
 	private boolean isCalibrated() {

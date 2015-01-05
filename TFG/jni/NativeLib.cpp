@@ -22,47 +22,7 @@ using namespace cv;
 
 
 Size tamano(8,5);
-int width_points=5;
-int height_points=8;
 int chess_size=29;
-
-
-
-/*vector<vector<Point> > findConcentricSquares(vector<vector<Point> > cuadrados){
-	vector<vector<Point> > marca=NULL;
-	for(int i=0; i<cuadrados.size();i++){
-		float center1=getCenter(cuadrados[i]);
-		Point2f centro1=new Point2f(center1[0],center1[1]);
-		Point2f punto1=new Point2f(cuadrados[i][0].x,cuadrados[i][0].y);
-		float pt1[]={cuadrados[i][0].x,cuadrados[i][0].y};
-		float threshold=distance(centro1,punto1)/10;
-		for(int j=0;j<cuadrados.size();j++){
-			float center2=getCenter(cuadrados[j]);
-			int distancia=distance(cuadrados[i][0],cuadrados[j][0]);
-			if(distancia<threshold){
-			}
-		}
-	}
-	return marca;
-}*/
-
-float* getMoment(vector<Point> contorno){
-	Moments M=moments(contorno);
-	float *centro= new float[2];
-	centro[0]=float(M.m10/M.m00);
-	centro[1]=float(M.m01/M.m00);
-	//cout << "centro: " << centro[0] << " " << centro[1] << endl;
-	return centro;
-}
-
-/*void printPoint(Point punto){
-	cout << "Punto: " << punto.x << "," << punto.y << endl;
-}*/
-
-/*void printPoint(Point3f punto){
-	cout << "Punto: " << punto.x << "," << punto.y << "," << punto.z << endl;
-}*/
-
 
 //Hallar los 2 menores Y y luego encontrar el menor X entre esos 2 para que sea la primera esquina
 vector<Point> sortCoord(vector<Point> contorno){
@@ -142,29 +102,6 @@ vector<vector<Point> > eliminateDoubleContours(vector<vector<Point> > cuadrados)
 	return ncuadrados;
 }
 
-float* getCenter(vector<Point> contorno){
-	float centro[2];
-	for(int i=0; i++;i< contorno.size()){
-		centro[0]=centro[0]+contorno[i].x;
-		centro[1]=centro[1]+contorno[i].y;
-	}
-	centro[0]=centro[0]/4;
-	centro[1]=centro[1]/4;
-	return centro;
-}
-
-float distance (Point p1, Point p2){
-	float distance=0;
-	distance=pow(p1.x-p2.x,2)+pow(p1.y-p2.y,2);
-	return distance;
-}
-
-float distance (float* p1, float* p2){
-	float distance=0;
-	distance=pow(p1[0]-p2[0],2)+pow(p1[1]-p2[1],2);
-	return distance;
-}
-
 void getObjectPoints(vector<Point3f>& corners)
 {
 	for( int i = 0; i < tamano.height; ++i )
@@ -187,6 +124,7 @@ vector<vector<Point> > filtraVertices(vector<vector<Point> > contornos){
 	return cuadrangulos;
 }
 
+//Debugging
 void printContour(vector<Point> contorno){
 	__android_log_print(ANDROID_LOG_INFO,"Native","Comienzo");
 	for(int i=0;i<contorno.size();i++){
@@ -218,10 +156,10 @@ void putVector(Mat imagen,string mensaje,Mat vector,int flag){
 	str1  << vector.row(0);
 	str2  << vector.row(1);
 	str3  << vector.row(2);
-	putText(imagen,mensaje,Point(5,60+flag),FONT_HERSHEY_SIMPLEX,1,Scalar::all(255),1.5);
-	putText(imagen,str1.str(),Point(5,90+flag),FONT_HERSHEY_SIMPLEX,1,Scalar::all(255),1.5);
-	putText(imagen,str2.str(),Point(5,120+flag),FONT_HERSHEY_SIMPLEX,1,Scalar::all(255),1.5);
-	putText(imagen,str3.str(),Point(5,150+flag),FONT_HERSHEY_SIMPLEX,1,Scalar::all(255),1.5);
+	putText(imagen,mensaje,Point(5,60+flag),FONT_HERSHEY_SIMPLEX,1,Scalar::all(255),2);
+	putText(imagen,str1.str(),Point(5,90+flag),FONT_HERSHEY_SIMPLEX,1,Scalar::all(255),2);
+	putText(imagen,str2.str(),Point(5,120+flag),FONT_HERSHEY_SIMPLEX,1,Scalar::all(255),2);
+	putText(imagen,str3.str(),Point(5,150+flag),FONT_HERSHEY_SIMPLEX,1,Scalar::all(255),2);
 }
 
 extern "C" {
@@ -253,15 +191,12 @@ JNIEXPORT void JNICALL Java_upm_tfg_Localizacion_findSquares(JNIEnv *env, jobjec
 	cuadrados=filtraVertices(contours);
 	marca=eliminateDoubleContours(cuadrados);
 	if(!marca.empty()){
-		//printContour(marca[0]);
-		//printContour(marca[1]);
 		//Obtenemos los objectPoints
 		vector<Point3f> objectPoints=getObjectPoints();
 
 		//Ordenamos los imagePoints y los juntamos en un solo vector
 		ordenados.push_back(sortCoord(marca[0]));
 		ordenados.push_back(sortCoord(marca[1]));
-		//printContour(ordenados[0]);
 		vector<Point2f> imagePoints;
 		for(int i=0;i<ordenados[0].size();i++){
 			imagePoints.push_back(ordenados[0][i]);
@@ -322,7 +257,6 @@ JNIEXPORT void JNICALL Java_upm_tfg_Calibracion_calibrate(JNIEnv *env, jobject t
 	objectPoints[0].clear();
 	getObjectPoints(objectPoints[0]);
 	objectPoints.resize(imagePoints.size(),objectPoints[0]);
-	//distCoeffs = Mat::zeros(8, 1, CV_64F);
 	vector<Mat> rvecs, tvecs;
 	double rms = calibrateCamera(objectPoints, imagePoints, Size(8,5), cameraMatrix, distCoeffs, rvecs, tvecs);
 

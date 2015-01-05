@@ -54,7 +54,7 @@ public class Localizacion extends Activity implements CvCameraViewListener2 {
 		getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
 
 		//Cargamos el layout
-		setContentView(R.layout.camera);
+		setContentView(R.layout.camara);
 
 		//Cargamos los parametros intrinsecos
 		cameraMatrix=loadMatrix();
