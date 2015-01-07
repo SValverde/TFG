@@ -62,7 +62,7 @@ public class Calibracion extends Activity {
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		//Cargamos el layouyt
-		setContentView(R.layout.activity_main);
+		setContentView(R.layout.calibracion);
 		//Obtenemos la referencia al archivo de preferencias
 		prefs=getSharedPreferences("Calibracion",Context.MODE_PRIVATE);
 		//Creamos el directorio donde almacenaremos las fotografias de calibracion
@@ -70,8 +70,8 @@ public class Calibracion extends Activity {
 		wallpaperDirectory.mkdirs();
 
 		//Obtenemos una referencia a los controles de la interfaz
-		final Button btnCalib = (Button)findViewById(R.id.BtnCalib);
-		final Button btnReset = (Button)findViewById(R.id.BtnReset);
+		final Button btnCalib = (Button)findViewById(R.id.btnCalibrar);
+		final Button btnReset = (Button)findViewById(R.id.btnBorrar);
 		if(isCalibrated())
 			btnCalib.setText("Continuar");
 		
@@ -94,8 +94,8 @@ public class Calibracion extends Activity {
 				if(!isCalibrated()){
 					btnCalib.setText("Calibrando");
 					//Obtenemos las rutas de las imagenes de calibracion
-					File prueba=Environment.getExternalStorageDirectory();
-					String path=prueba.getAbsolutePath()+"/Calibracion";
+					File root=Environment.getExternalStorageDirectory();
+					String path=root.getAbsolutePath()+"/Calibracion";
 					File pictures= new File(path);	
 					String lista1[]=pictures.list();
 					String pathList[]= new String[lista1.length];

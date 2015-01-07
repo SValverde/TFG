@@ -137,13 +137,13 @@ vector<Point3f> getObjectPoints(){
 	vector<Point3f> objectPoints;
 	Point3f *puntos=new Point3f[8];
 	puntos[0].x=0;puntos[0].y=0;puntos[0].z=0;
-	puntos[1].x=200;puntos[1].y=0;puntos[1].z=0;
-	puntos[2].x=0;puntos[2].y=200;puntos[2].z=0;
-	puntos[3].x=200;puntos[3].y=200;puntos[3].z=0;
-	puntos[4].x=50;puntos[4].y=50;puntos[4].z=0;
-	puntos[5].x=150;puntos[5].y=50;puntos[5].z=0;
-	puntos[6].x=50;puntos[6].y=150;puntos[6].z=0;
-	puntos[7].x=150;puntos[7].y=150;puntos[7].z=0;
+	puntos[1].x=150;puntos[1].y=0;puntos[1].z=0;
+	puntos[2].x=0;puntos[2].y=150;puntos[2].z=0;
+	puntos[3].x=150;puntos[3].y=150;puntos[3].z=0;
+	puntos[4].x=37;puntos[4].y=37;puntos[4].z=0;
+	puntos[5].x=112;puntos[5].y=37;puntos[5].z=0;
+	puntos[6].x=37;puntos[6].y=112;puntos[6].z=0;
+	puntos[7].x=112;puntos[7].y=112;puntos[7].z=0;
 	for(int i=0;i<8;i++){
 		objectPoints.push_back(puntos[i]);
 	}
@@ -246,7 +246,7 @@ JNIEXPORT void JNICALL Java_upm_tfg_Calibracion_calibrate(JNIEnv *env, jobject t
 		Mat dst;
 
 		//Reescalamos la imagen
-		resize(view, dst, Size(), 0.3, 0.23, CV_INTER_AREA);
+		resize(view, dst, Size(), 0.3, 0.3, CV_INTER_AREA);
 
 		//Hallamos los imagePoints y los guardamos en el vector
 		found=findChessboardCorners(dst,Size(8,5),pointBuf,0);

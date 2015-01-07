@@ -6,7 +6,10 @@
     android:paddingLeft="@dimen/activity_horizontal_margin"
     android:paddingRight="@dimen/activity_horizontal_margin"
     android:paddingTop="@dimen/activity_vertical_margin"
-    tools:context=".MainActivity" >
+    tools:context=".MainActivity" 
+    
+    android:background="@drawable/background"
+    >
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -17,24 +20,24 @@
         android:padding="10dp" >
 
         <Button
-            android:id="@+id/btnSignUp"
+            android:id="@+id/btnCalibrar"
             style="@style/DefaultButtonText"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_margin="4dp"
             android:background="@drawable/button_default_bg"
             android:padding="10dp"
-            android:text="Sign Up" />
+            android:text="@string/boton" />
 
         <Button
-            android:id="@+id/btnSingIn"
+            android:id="@+id/btnBorrar"
             style="@style/DefaultButtonText"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_margin="4dp"
             android:background="@drawable/button_default_bg"
             android:padding="10dp"
-            android:text="Sign In" />
+            android:text="@string/reset" />
     </LinearLayout>
 
 </RelativeLayout>

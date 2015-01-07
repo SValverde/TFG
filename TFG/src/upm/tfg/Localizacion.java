@@ -15,6 +15,7 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.Window;
 import android.view.WindowManager;
 
 public class Localizacion extends Activity implements CvCameraViewListener2 {
@@ -51,6 +52,8 @@ public class Localizacion extends Activity implements CvCameraViewListener2 {
 		Log.i("Pruebas", "called onCreate");
 		super.onCreate(savedInstanceState);
 		//Mantenemos la pantalla encendida
+        getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
+            WindowManager.LayoutParams.FLAG_FULLSCREEN);
 		getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
 
 		//Cargamos el layout
@@ -62,6 +65,7 @@ public class Localizacion extends Activity implements CvCameraViewListener2 {
 
 		//Obtenemos la referencia a la camara y la activamos
 		mOpenCvCameraView = (CameraBridgeViewBase) findViewById(R.id.camara);
+		mOpenCvCameraView.setMaxFrameSize(1300, 800);
 		mOpenCvCameraView.setCvCameraViewListener(this);
 	}
 
@@ -141,7 +145,7 @@ public class Localizacion extends Activity implements CvCameraViewListener2 {
 	public Mat onCameraFrame(CvCameraViewFrame inputFrame) {
 		//Transformamos el fotograma en un objeto tipo Mat
 		mRgba = inputFrame.rgba();
-		Log.e("Pruebas",mRgba.size().toString());
+		Log.e("Native",mRgba.size().toString());
 		
 		//Llamamos a la funcion definida en la libreria nativa
 		findSquares(mRgba.getNativeObjAddr(),cameraMatrix.getNativeObjAddr(),distCoeffs.getNativeObjAddr());
